@@ -1,0 +1,8 @@
+resources:
+- deploy.yaml
+- service.yaml
+
+images:
+- name: 194768394447.dkr.ecr.us-east-1.amazonaws.com/workshop-2/production/backend
+  newName: 194768394447.dkr.ecr.us-east-1.amazonaws.com/workshop-2/production/backend
+  newTag: v1.0
