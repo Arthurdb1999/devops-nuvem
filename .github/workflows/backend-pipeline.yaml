@@ -20,7 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
-      token: ${{ secrets.PAT }}
+      with:
+        token: ${{ secrets.PAT }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
