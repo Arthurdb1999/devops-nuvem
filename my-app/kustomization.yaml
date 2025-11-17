@@ -7,4 +7,4 @@ resources:
 images:
 - name: 194768394447.dkr.ecr.us-east-1.amazonaws.com/workshop-2/production/backend
   newName: 194768394447.dkr.ecr.us-east-1.amazonaws.com/workshop-2/production/backend
-  newTag: 20b449f3ab44bb36fa8a2e8a3bb821a74be0f187
+  newTag: 28a35f69c775152f3b10a10a3d57647dacaaabd1
