@@ -44,9 +44,9 @@ variable "eks_cluster" {
     node_group_name                        = "workshop-2-eks-cluster-node-group"
     node_group_capacity_type               = "ON_DEMAND"
     node_group_instance_types              = ["t3.micro"]
-    node_group_scaling_config_desired_size = 2
-    node_group_scaling_config_max_size     = 2
-    node_group_scaling_config_min_size     = 2
+    node_group_scaling_config_desired_size = 7
+    node_group_scaling_config_max_size     = 9
+    node_group_scaling_config_min_size     = 7
     node_group_iam_role_name               = "workshop-2-eks-cluster-node-group-role"
   }
 }
