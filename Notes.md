@@ -85,6 +85,9 @@ k get nodes
 
 ### Deploy
 
+ECR - Elastic Container Registry
+Um repositório de versionamento para imagens docker. Criamos usando Terraform tambem
+
 Na pasta my-app, dá pra rodar o kustomize e depois somente aplicar o arquivo kustomization.
 
 ```
@@ -94,3 +97,53 @@ k apply -k .
 
 kustomize edit set image <image_name>:v1.0=<image_name>:v2.0
 ```
+
+### Argo CD
+
+```
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+É uma ferramenta que permite sincronizar o github, e ele mesmo vai aplicar os recursos k8s.
+- Exemplo: em vez de rodar `k apply -f deploy.yaml`, eu só edito o yaml, commito e pusho, e o Argo vai pegar esse evento, vai rodar o `kustomize build`, e vai automaticamente aplicar o deployment.
+
+- Nesse caso foi interessante, pois o Argo faz deploy de vários pods, e eu não tinha nodos para que os pods rodassem. Tive que aumentar o worker node group para inicializar o Argo.
+
+Depois disso posso fazer um port-forward para acessar a UI do Argo:
+
+```
+k port-forward -n argocd svc/argocd-server 8083:443
+```
+
+Pra fazer o login na UI, pego a senha através do secret e decodo de `base64`:
+```
+k get secrets -n argocd argocd-initial-admin-secret -o yaml
+
+echo "my_secret" | base64 -d
+```
+
+**Importante**
+O Argo precisa enxergar o `kustomization.yaml`, pra isso, é importante colocar o path do kustomization no `application.yaml``
+
+### Github Actions
+
+É o arquivo `backend-pipeline.yaml`
+
+É uma pipeline comum, com vários steps. Como coloquei tudo em um repo, não precisou fazer checkout para um repo apenas de gitops, mas o certo seria ter um repo só com o app e infra, e outro só com os recursos kubernetes, argo e kustomization.
+
+Essa pipeline seria a responsável por integrar os dois repos. Precisei criar um token e colocar ele no meu repo, com o nome `PAT`.
+
+Precisa tambem criar uma role só pro github actions, isso foi feito no terraform. 
+O email do bot do github é esse mesmo e é global.
+
+Como eu fiz tudo em um repo, tive que colocar um `if` no início do `backend-job`, para não ficar em looping infinito (pois pipelines estavam sendo triggadas pelos commits do bot do github).
+
+## Considerações
+
+Projeto muito massa, faz muito mais sentido trabalhar em um componente cloud native agora.
+
+Repositórios originais:
+
+- https://github.com/kenerry-serain/dvn-workshop-nov-dia-2/tree/main
+- https://github.com/kenerry-serain/dvn-workshop-nov-dia-2-gitops/tree/main
+
