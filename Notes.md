@@ -136,9 +136,13 @@ Essa pipeline seria a responsável por integrar os dois repos. Precisei criar um
 Precisa tambem criar uma role só pro github actions, isso foi feito no terraform. 
 O email do bot do github é esse mesmo e é global.
 
-Como eu fiz tudo em um repo, tive que colocar um `if` no início do `backend-job`, para não ficar em looping infinito (pois pipelines estavam sendo triggadas pelos commits do bot do github).
+Como eu fiz tudo em um repo, tive que colocar um `if` no início do `backend-job`, para não ficar em looping infinito (pois pipelines estavam sendo triggadas pelos commits do bot do github).p
 
 ## Considerações
+
+No final é importante rodar um `terraform destroy`, pra não gastar mais na AWS. Ainda mais eu que tive que provisionar 7 nodos t3.micro pra tankar o argo.
+
+Não destruir o s3 bucket que mantém o terraform state antes de destruir as outras duas stacks, pois uma depende da outra (ceomçar pelo 02, depois 01, depois 00). Fiz esse erro e tive que deletar alguns recursos na mão, pois ele perde o terraform state.
 
 Projeto muito massa, faz muito mais sentido trabalhar em um componente cloud native agora.
 
