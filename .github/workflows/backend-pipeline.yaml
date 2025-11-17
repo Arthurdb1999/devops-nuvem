@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
+      token: ${{ secrets.PAT }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
@@ -38,18 +39,14 @@ jobs:
         docker build -f ./my-app/Dockerfile -t $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG ./my-app
         docker push $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
 
-    - uses: actions/checkout@v5
-      with:
-        repository: Arthurdb1999/devops-nuvem
-        token: ${{ secrets.PAT }}
-
     - name: Kustomize Edit Set Image
+      working-directory: ./my-app
       env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
           kustomize edit set image $REGISTRY/$BACKEND_REPOSITORY=$REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ./my-app/kustomization.yaml
+          git add kustomization.yaml
           git commit -m "[BOT] Updated Image to $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
           git push
