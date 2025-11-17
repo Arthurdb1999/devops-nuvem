@@ -15,12 +15,12 @@ permissions:
 
 jobs:
   backend-job:
+    if: github.actor != 'github-actions[bot]'
     name: Backend Job
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v5
-      token: ${{ secrets.PAT }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5.1.0
